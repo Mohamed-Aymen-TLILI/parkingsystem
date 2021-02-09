@@ -1,5 +1,6 @@
 package com.parkit.parkingsystem.service;
 
+import com.parkit.parkingsystem.constants.Fare;
 import com.parkit.parkingsystem.constants.ParkingType;
 import com.parkit.parkingsystem.dao.ParkingSpotDAO;
 import com.parkit.parkingsystem.dao.TicketDAO;
@@ -11,7 +12,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.Date;
 
-public class ParkingService {
+public class        ParkingService {
 
     private static final Logger logger = LogManager.getLogger("ParkingService");
 
@@ -98,23 +99,31 @@ public class ParkingService {
     }
 
     public void processExitingVehicle() {
-        try{
+        processExitingVehicle(new Date());
+    }
+
+    public void processExitingVehicle(Date outTime) {
+        try {
             String vehicleRegNumber = getVehichleRegNumber();
             Ticket ticket = ticketDAO.getTicket(vehicleRegNumber);
-            Date outTime = new Date();
             ticket.setOutTime(outTime);
             fareCalculatorService.calculateFare(ticket);
-            if(ticketDAO.updateTicket(ticket)) {
+            if (ticketDAO.recurringUser(vehicleRegNumber)) {
+                // 5% discount for recurring users
+                ticket.setPrice(ticket.getPrice() * Fare.RECURRING_USER);
+            }
+            if (ticketDAO.updateTicket(ticket)) {
                 ParkingSpot parkingSpot = ticket.getParkingSpot();
                 parkingSpot.setAvailable(true);
                 parkingSpotDAO.updateParking(parkingSpot);
                 System.out.println("Please pay the parking fare:" + ticket.getPrice());
-                System.out.println("Recorded out-time for vehicle number:" + ticket.getVehicleRegNumber() + " is:" + outTime);
-            }else{
+                System.out.println(
+                        "Recorded out-time for vehicle number:" + ticket.getVehicleRegNumber() + " is:" + outTime);
+            } else {
                 System.out.println("Unable to update ticket information. Error occurred");
             }
-        }catch(Exception e){
-            logger.error("Unable to process exiting vehicle",e);
+        } catch (Exception e) {
+            logger.error("Unable to process exiting vehicle", e);
         }
     }
 }
