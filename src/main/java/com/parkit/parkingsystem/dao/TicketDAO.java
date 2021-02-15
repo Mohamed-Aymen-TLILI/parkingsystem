@@ -13,11 +13,23 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 
+/**
+ * Service to manage(CRUD) entity of a ticket into the SGBD.
+ * @author tlili
+ */
+
 public class TicketDAO {
 
     private static final Logger logger = LogManager.getLogger("TicketDAO");
 
     public DataBaseConfig dataBaseConfig = new DataBaseConfig();
+
+    /**
+     * save the ticket in the database ticket.
+     *
+     * @param ticket represent the ticket of a vehicle
+     * @return boolean true or false if the ticket was saved or not
+     */
 
     public boolean saveTicket(Ticket ticket){
         Connection con = null;
@@ -40,6 +52,12 @@ public class TicketDAO {
         }
     }
 
+    /**
+     * return the ticket for vehicle with the number plate given in parameter.
+     *
+     * @param vehicleRegNumber the number plate of the vehicle
+     * @return the ticket associated with the vehicle
+     */
     public Ticket getTicket(String vehicleRegNumber) {
         Connection con = null;
         Ticket ticket = null;
@@ -69,6 +87,12 @@ public class TicketDAO {
         }
     }
 
+    /**
+     * update a ticket given in the parameter with the correct informations.
+     *
+     * @param ticket the ticket of vehicle
+     * @return boolean true or false if the ticket was correctly updated
+     */
     public boolean updateTicket(Ticket ticket) {
         Connection con = null;
         try {
@@ -87,7 +111,12 @@ public class TicketDAO {
         return false;
     }
 
-
+    /**
+     * method to verify in DB table ticket if the user is recurring or not.
+     *
+     * @param vehicleRegNumber the number plate of the vehicle
+     * @return boolean true or false
+     */
     public boolean recurringUser(String vehicleRegNumber) {
         Connection con = null;
         boolean res;

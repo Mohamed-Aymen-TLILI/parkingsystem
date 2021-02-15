@@ -5,7 +5,11 @@ import com.parkit.parkingsystem.model.Ticket;
 
 import java.util.concurrent.TimeUnit;
 
-public class FareCalculatorService {
+/**
+ * Service of calculation of fare for a use of park for any vehicule with it's ticket.
+ */
+
+ public class FareCalculatorService {
 
     private static final double ONE_HOUR_MILLIS = TimeUnit.HOURS.toMillis(1L);
     private static final double HALF_HOUR_MILLIS = TimeUnit.MINUTES.toMillis(30L);
@@ -38,5 +42,9 @@ public class FareCalculatorService {
         }
 
         ticket.setPrice(durationMillis / ONE_HOUR_MILLIS * rate);
+
+        if (ticket.getIsRecurringUser()) {
+            ticket.setPrice(Fare.roundedFare(ticket.getPrice() * 0.95));
+        }
     }
 }

@@ -5,7 +5,10 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.Scanner;
 
-public class InputReaderUtil {
+/**
+ * instrument to read data from console.
+ */
+ public class InputReaderUtil {
 
     private static Scanner scan = new Scanner(System.in);
     private static final Logger logger = LogManager.getLogger("InputReaderUtil");
@@ -35,5 +38,20 @@ public class InputReaderUtil {
         }
     }
 
+    /**
+     * method to give another scan for test to this class.
+     *
+     * @param scan the scanner to read from console
+     */
+    public static void setScan(Scanner scan) {
+        InputReaderUtil.scan = scan;
+    }
+
+    /**
+     * method to restore the scanner with System.in after tests
+     */
+    public static void restoreScan() {
+        System.setIn(System.in);
+    }
 
 }

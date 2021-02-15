@@ -24,7 +24,11 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
+/**
+ * class of integration tests to check the use of Database.
+ */
+
+ @ExtendWith(MockitoExtension.class)
 public class ParkingDataBaseIT {
     private static final String TICKET_NUMBER = "ABCDEF";
 
@@ -59,11 +63,15 @@ public class ParkingDataBaseIT {
 
     @Test
     public void testParkingACar() {
+
+        // GIVEN
         int previousSlot = parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR);
 
+        //WHEN
         ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
         parkingService.processIncomingVehicle();
 
+        // THEN:
         // check that a ticket is actualy saved in DB
         Ticket ticket = ticketDAO.getTicket(TICKET_NUMBER);
         assertNotNull(ticket);
@@ -80,14 +88,17 @@ public class ParkingDataBaseIT {
     }
 
     public void testParkingLotExit(boolean recurring) {
+        // GIVEN:
         testParkingACar();
         Ticket ticket = ticketDAO.getTicket(TICKET_NUMBER);
+        // WHEN
         ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
         long outTime = ticket.getInTime().getTime() + 60 * 60 * 1000;
         parkingService.processExitingVehicle(new Date(outTime));
 
         // check that the fare generated and out time are populated correctly in the database
         ticket = ticketDAO.getTicket(TICKET_NUMBER);
+        // THEN
         assertNotNull(ticket);
         assertEquals(outTime, ticket.getOutTime().getTime());
         assertEquals(Fare.CAR_RATE_PER_HOUR * (recurring ? Fare.RECURRING_USER : 1.0), ticket.getPrice());

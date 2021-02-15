@@ -11,11 +11,21 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+/**
+ * Service to manage(CRUD) entity of a Parking place into the SGBD.
+ * @author tlili
+ */
 public class ParkingSpotDAO {
     private static final Logger logger = LogManager.getLogger("ParkingSpotDAO");
 
     public DataBaseConfig dataBaseConfig = new DataBaseConfig();
 
+    /**
+     * return the available slot in the park for a type of vehicle.
+     *
+     * @param parkingType the type of a vehicle {@link ParkingType}
+     * @return the number of the parking place available for this type of vehicle
+     */
     public int getNextAvailableSlot(ParkingType parkingType){
         Connection con = null;
         int result=-1;
@@ -36,6 +46,13 @@ public class ParkingSpotDAO {
         }
         return result;
     }
+
+    /**
+     * update the availability for a parking space.
+     *
+     * @param parkingSpot the entity representing the parking place
+     * @return boolean : true if it's available or false
+     */
 
     public boolean updateParking(ParkingSpot parkingSpot){
         //update the availability fo that parking slot
